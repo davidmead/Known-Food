@@ -1,5 +1,5 @@
 <?php
-    
+
 
     namespace IdnoPlugins\Food {
 
@@ -8,10 +8,13 @@
         class Food extends \Idno\Common\Entity
         {
             public $mapping = array(
-                'ate' => 'fa-utensils',
-                'drank' => 'fa-glass-martini',
-                'drank-coffee' => 'fa-coffee',
-                'drank-beer' => 'fa-beer'
+            'meal' => 'fa-utensils',
+			'snack' => 'fa-cookie-bite',
+			'teacoffee' => 'fa-coffee',
+			'spirit' => 'fa-glass-whiskey',
+			'beer' => 'fa-beer',
+			'cocktail' => 'fa-cocktail',
+			'wine' => 'fa-wine-glass'
             );
 
             function getTitle()
@@ -20,10 +23,10 @@
 
                 return $this->title;
             }
-            
+
             function getCategoryIcon()
             {
-                return $this->mapping[$this->category];
+                return $this->mapping[$this->foodType];
             }
 
             function getDescription()
@@ -35,11 +38,11 @@
 
             function getCategory()
             {
-                if (!empty($this->category)) return $this->category;
+                if (!empty($this->foodType)) return $this->foodType;
 
                 return '';
             }
-            
+
             function getURL()
             {
 
@@ -78,17 +81,17 @@
                     $new = false;
                 }
                 $body = \Idno\Core\site()->currentPage()->getInput('body');
-                
+
                 $this->body            = $body;
                 $this->title           = \Idno\Core\site()->currentPage()->getInput('title');
-                $this->category        = \Idno\Core\site()->currentPage()->getInput('category');
+                $this->foodType        = \Idno\Core\site()->currentPage()->getInput('foodType');
                 $access                = \Idno\Core\site()->currentPage()->getInput('access');
                 $this->setAccess($access);
 
-                if (empty($this->category)) {
-                    $this->category = 'ate';
+                if (empty($this->foodType)) {
+                    $this->foodType = 'meal';
                 }
-                
+
                 if ($time = \Idno\Core\site()->currentPage()->getInput('created')) {
                     if ($time = strtotime($time)) {
                         $this->created = $time;
@@ -98,7 +101,7 @@
                 if ($new) {
                     if (!empty($_FILES['photo']['tmp_name'])) {
                         if (\Idno\Entities\File::isImage($_FILES['photo']['tmp_name'])) {
-                            
+
                             // Extract exif data so we can rotate
                             if (is_callable('exif_read_data') && $_FILES['photo']['type'] == 'image/jpeg') {
                                 try {
@@ -113,7 +116,7 @@
                             } else {
                                 $exif = false;
                             }
-                            
+
                             if ($photo = \Idno\Entities\File::createFromFile($_FILES['photo']['tmp_name'], $_FILES['photo']['name'], $_FILES['photo']['type'], true, true)) {
                                 $this->attachFile($photo);
 

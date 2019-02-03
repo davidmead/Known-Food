@@ -12,7 +12,7 @@
             <?php
         }
     ?>
-            
+
     <?php
         if ($attachments = $vars['object']->getAttachments()) {
             foreach ($attachments as $attachment) {
@@ -24,11 +24,11 @@
                 } else {
                     $src = $mainsrc;
                 }
-                
+
                 // Patch to correct certain broken URLs caused by https://github.com/idno/known/issues/526
                 $src = preg_replace('/^(https?:\/\/\/)/', \Idno\Core\site()->config()->getDisplayURL(), $src);
                 $mainsrc = preg_replace('/^(https?:\/\/\/)/', \Idno\Core\site()->config()->getDisplayURL(), $mainsrc);
-                
+
                 ?>
                 <p style="text-align: center">
                     <a href="<?= $this->makeDisplayURL($mainsrc) ?>"><img src="<?= $this->makeDisplayURL($src) ?>" class="u-photo"/></a>
@@ -37,12 +37,12 @@
             }
         }
     ?>
-            
+
             <div class="e-content">
                 <?= $this->__(['value' => $vars['object']->body, 'object' => $vars['object']])->draw('forms/output/richtext'); ?>
             </div>
-            
-            <div style="display: none;">
+
+            <div class="hidden">
                 <p class="h-card vcard p-author">
                     <a href="<?= $vars['object']->getOwner()->getURL(); ?>" class="icon-container">
                         <img class="u-logo logo u-photo photo" src="<?= $vars['object']->getOwner()->getIcon(); ?>"/>

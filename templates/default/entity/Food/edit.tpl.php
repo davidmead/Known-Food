@@ -12,10 +12,10 @@
     } else {
         $title = $autosave->getValue('food', 'title');
     }
-    if (!empty($vars['object']->category)) {
-        $category = $vars['object']->category;
+    if (!empty($vars['object']->foodType)) {
+        $foodType = $vars['object']->foodType;
     } else {
-        $category = $autosave->getValue('food', 'category');
+        $foodType = $autosave->getValue('food', 'foodType');
     }
     if (!empty($vars['object'])) {
         $object = $vars['object'];
@@ -26,65 +26,52 @@
     /* @var \Idno\Core\Template $this */
 
 ?>
-    <form action="<?= $vars['object']->getURL() ?>" method="post" enctype="multipart/form-data">
 
-        <div class="row">
-
-            <div class="col-md-8 col-md-offset-2 edit-pane">
-
-
-                <?php
-
-                    if (empty($vars['object']->_id)) {
-
-                        ?>
-                        <h4>Log Food or Drink</h4>
-                    <?php
-
-                    } else {
-
-                        ?>
-                        <h4>Edit Log</h4>
-                    <?php
-
-                    }
-
-                ?>
-
-                <?php
-
-                    if (empty($vars['object']->_id)) {
-
-                        ?>
-                        <div id="photo-preview"></div>
-                        <p>
-                                <span class="btn btn-primary btn-file">
-                                        <i class="fa fa-camera"></i> <span
-                                        id="photo-filename">Select a photo</span> <input type="file" name="photo"
-                                                                                         id="photo"
-                                                                                         class="col-md-9 form-control"
-                                                                                         accept="image/*;capture=camera"
-                                                                                         onchange="photoPreview(this)"/>
-
-                                    </span>
-                        </p>
-
-                    <?php
-
-                    }
-
-                ?>
-                <div class="content-form">
-
+   <!--
                     <style>
                         .category-block {
                             margin-bottom: 1em;
                         }
                     </style>
-                    <label for="title">Title</label>
-                    <input type="text" name="title" id="title" placeholder="What did you eat or drink?" value="<?= htmlspecialchars($title) ?>" class="form-control"/>                    
-                    
+-->
+
+
+
+
+    <form action="<?= $vars['object']->getURL() ?>" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 edit-pane">
+                <?php if (empty($vars['object']->_id)) { ?>
+                <h4>What did you eat/drink?</h4>
+                <?php } else { ?>
+                <h4>Edit what you ate/drank.</h4>
+                <?php } ?>
+
+                <?php if (empty($vars['object']->_id)) { ?>
+                <div id="photo-preview"></div>
+                    <p><span class="btn btn-primary btn-file"><i class="fa fa-camera"></i> <span id="photo-filename">Select a photo</span> <input type="file" name="photo" id="photo" class="col-md-9 form-control" accept="image/*;capture=camera" onchange="photoPreview(this)"/></span></p>
+                    <?php } ?>
+                <div class="content-form">
+	                <p class="form-group">
+		                <label for="title">Name</label>
+		                <input type="text" name="title" id="title" placeholder="What did you eat or drink?" value="<?= htmlspecialchars($title) ?>" class="form-control"/>
+	                </p>
+
+                    <p class="form-group">
+	                    <label for="foodType">Type</label>
+						<select class="form-control" name="foodType" id="foodType">
+							<option data-foodType="meal" value="meal" <?php if ($foodType == 'meal' ) echo 'selected' ; ?>>Meal</option>
+							<option data-foodType="snack" value="snack" <?php if ($foodType == 'snack' ) echo 'selected' ; ?>>Snack</option>
+							<option data-foodType="teacoffee" value="teacoffee" <?php if ($foodType == 'teacoffee' ) echo 'selected' ; ?>>Tea/Coffee</option>
+							<option data-foodType="spirit" value="spirit" <?php if ($foodType == 'spirit' ) echo 'selected' ; ?>>Spirit</option>
+							<option data-foodType="beer" value="beer" <?php if ($foodType == 'beer' ) echo 'selected' ; ?>>Beer</option>
+							<option data-foodType="cocktail" value="cocktail" <?php if ($foodType == 'cocktail' ) echo 'selected' ; ?>>Cocktail</option>
+							<option data-foodType="wine" value="wine" <?php if ($foodType == 'wine' ) echo 'selected' ; ?>>Wine</option>
+						</select>
+					</p>
+
                     <!-- styled category -->
+                    <!--
                     <label for="category">Category</label>
                     <div class="category-block">
                         <input type="hidden" name="category" id="category-id" value="<?= $category ?>">
@@ -130,13 +117,16 @@
                             $('#category-button').click();
                             return false;
                         });
-                       
+
                         $('#category-id').on('change', function () {
                         });
                     </script>
+                    -->
                     <!-- end styled category -->
+
+
                 </div>
-                
+
                 <label for="body">Details</label>
                 <?= $this->__([
                     'name' => 'body',
@@ -148,11 +138,11 @@
 
                 <?php if (empty($vars['object']->_id)) echo $this->drawSyndication('article'); ?>
                 <?php if (empty($vars['object']->_id)) { ?><input type="hidden" name="forward-to" value="<?= \Idno\Core\site()->config()->getDisplayURL() . 'content/all/'; ?>" /><?php } ?>
-                
+
                 <?= $this->draw('content/access'); ?>
 
-                <p class="button-bar ">
-	                
+                <p class="button-bar">
+
                     <?= \Idno\Core\site()->actions()->signForm('/food/edit') ?>
                     <input type="button" class="btn btn-cancel" value="Cancel" onclick="tinymce.EditorManager.execCommand('mceRemoveEditor',true, 'body'); hideContentCreateForm();"/>
                     <input type="submit" class="btn btn-primary" value="Publish"/>
@@ -172,7 +162,7 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    $('#photo-preview').html('<img src="" id="photopreview" style="display:none; width: 400px">');
+                    $('#photo-preview').html('<img src="" id="photopreview" class="hidden" style="width: 400px">');
                     $('#photo-filename').html('Choose different photo');
                     $('#photopreview').attr('src', e.target.result);
                     $('#photopreview').show();
@@ -184,5 +174,5 @@
         //}
     </script>
 
-    <div id="bodyautosave" style="display:none"></div>
+    <div id="bodyautosave" class="hidden"></div>
 <?= $this->draw('entity/edit/footer'); ?>
